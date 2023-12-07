@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+        integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/style.css">
+
+    <style>
+        body {
+            background: #2C3E50;
+            color: #ecf0f1;
+            font-family: 'Helvetica', sans-serif;
+            overflow: hidden;
+        }
+
+        video {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: -1;
+            transform: translateX(-50%) translateY(-50%);
+        }
+
+        .form-signin {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #858e89;
+            padding: 20px;
+            margin-top: 30px;
+            border: 2px solid #010a0f;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        img.logo {
+            width: 300px;
+        }
+
+        img.result-image {
+            width: 100%;
+            max-height: 300px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+        button {
+            background-color: #070908 !important;
+            border: 1px solid #070908 !important;
+            color: #fff !important;
+            border-radius: 20px !important;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, border 0.3s ease, color 0.3s ease;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #8ea369 !important;
+            border: 1px solid #8ea369 !important;
+        }
+
+        .animal-info {
+            margin-top: 20px;
+            color: #fff;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            border-radius: 10px;
+            color: #333;
+        }
+
+        .modal-header {
+            background-color: #3498db;
+            color: #fff;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .modal-footer {
+            background-color: #f5f5f5;
+            border-radius: 0 0 10px 10px;
+        }
+
+        .close {
+          color: inherit;
+        }
+
+        .modal-content,
+        .modal-dialog {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 80px;
+        }
+
+        .navbar-btn {
+            margin: 0 10px;
+            background-color: #070908 !important;
+            border: none;
+            color: white;
+            border-radius: 20px !important;
+            transition: background-color 0.3s ease;
+        }
+
+        .navbar-btn:hover {
+            background-color: #8ea369 !important;
+        }
+
+        .mb-6 {
+            margin-bottom: 1.5rem !important;
+        }
+    </style>
+
+    <title>Detect Animal by YOLOv7</title>
+</head>
+
+<body class="text-center">
+    <video autoplay muted loop id="bgVideo">
+        <source src="{{ url_for('static', filename='pexels-mikhail-nilov-6981401(Original).mp4') }}"
+            type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <div class="header">
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse mx-auto text-center" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <button type="button" class="btn navbar-btn btn-about-us" data-toggle="modal"
+                            data-target="#aboutUsModal">About Us</button>
+                    </li>
+                    <li class="nav-item">
+                        <button type="button" class="btn navbar-btn btn-our-team" data-toggle="modal"
+                            data-target="#ourTeamModal">Our Team</button>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+
+    <!-- About Us Modal -->
+    <div class="modal fade" id="aboutUsModal" tabindex="-1" role="dialog" aria-labelledby="aboutUsModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="aboutUsModalLabel">About Us</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Welcome to our animal detection application powered by YOLOv7. Our mission is to provide a
+                        user-friendly platform that allows users to detect and identify various animal species using
+                        advanced computer vision technology.</p>
+                    <p>With a passion for technology, our team has worked tirelessly to create this application, aiming to
+                        raise awareness about the diverse animal kingdom and promote the importance of coexisting with
+                        nature.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Our Team Modal -->
+    <div class="modal fade" id="ourTeamModal" tabindex="-1" role="dialog" aria-labelledby="ourTeamModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ourTeamModalLabel">Our Team</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>We are a dedicated team of developers, designers, and wildlife enthusiasts who joined forces to
+                        create this animal detection application. Each member brings a unique set of skills and expertise,
+                        contributing to the success of our project.</p>
+                    <p>Meet our team:</p>
+                    <ul style="list-style: none; padding: 0; margin: 0;">
+                        <li><strong>Leela Prasad</strong> - Project Lead</li>
+                        <li><strong>Ahmed</strong> - Project Manager</li>
+                        <li><strong>Nigel George</strong> - FrontEnd and Deployment Developer</li>
+                        <li><strong>Tony Regi Jacob</strong> - BackendEnd and Deployment Developer</li>
+                        <li><strong>Hasan Muhammad</strong> - Data Engineer</li>
+                        <li><strong>Dharma </strong> - Document Specialist</li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <form class="form-signin card_res mb-6" method="post" enctype="multipart/form-data">
+        <img class="logo mb-4"
+            src="https://imgs.search.brave.com/Bnnn3ZeG7Pqi2KdqqrEWYnAS4lj4fX3NGvF3uSC7NII/rs:fit:860:0:0/g:ce/aHR0cHM6Ly93d3cu/cG5ncGxheS5jb20v/d3AtY29udGVudC91/cGxvYWRzLzEyL0p1/bWFuamktRnJlZS1Q/TkcucG5n" alt="Logo">
+
+        <img class="result-image img-fluid" src="{{ url_for('static', filename=result_image) }}"
+            alt="User_Image">
+
+        <div class="row mt-12">
+            <div class="col-md-6 offset-md-3">
+                <div class="animal-info">
+                    <button type="button" class="btn btn-danger" data-toggle="modal"
+                        data-target="#animalInfoModal">Animal Species Info</button>
+                        <button type="submit" class="btn btn-success mt-3">Test Another Image</button>
+                </div>
+                
+            </div>
+        </div>
+    </form>
+
+    <!-- Animal Info Modal -->
+    <div class="modal fade" id="animalInfoModal" tabindex="-1" role="dialog" aria-labelledby="animalInfoModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="animalInfoModalLabel">Animal Information</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Animal Name: {{ animal_name }}</p>
+                    <p>Animal Info: {{ animal_info }}</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+        integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+        integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
